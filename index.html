@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Il mio primo sito su VPS</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <span class="nav-logo">&#x2601; MyVPS</span>
+      <ul class="nav-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#contact">Contatti</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="badge">Deployed on VPS</div>
+      <h1>Il mio primo sito<br><span class="gradient-text">su VPS</span></h1>
+      <p class="hero-sub">Hosting autonomo, pieno controllo, prestazioni reali.<br>Benvenuto nel mio angolo del web.</p>
+      <div class="hero-actions">
+        <a href="#features" class="btn btn-primary">Scopri di più</a>
+        <a href="#contact" class="btn btn-ghost">Contattami</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <span class="terminal-title">bash</span>
+        </div>
+        <div class="terminal-body">
+          <p><span class="prompt">user@vps:~$</span> nginx -v</p>
+          <p class="out">nginx version: nginx/1.26.0</p>
+          <p><span class="prompt">user@vps:~$</span> systemctl status nginx</p>
+          <p class="out green-text">&#x25CF; nginx is <strong>active (running)</strong></p>
+          <p><span class="prompt">user@vps:~$</span> uptime</p>
+          <p class="out">up 42 days, 7:12, load avg: 0.05</p>
+          <p><span class="prompt">user@vps:~$</span> <span class="blink">_</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2 class="section-title">Perché un VPS?</h2>
+      <p class="section-sub">Indipendenza, potenza e flessibilità al costo di un caffè al giorno.</p>
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">&#x26A1;</div>
+          <h3>Performance</h3>
+          <p>Risorse dedicate per garantire tempi di risposta fulminei e zero condivisione con altri utenti.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">&#x1F512;</div>
+          <h3>Sicurezza</h3>
+          <p>Configurazione firewall personalizzata, certificati SSL e accesso SSH con chiave pubblica.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">&#x1F527;</div>
+          <h3>Controllo totale</h3>
+          <p>Root access completo. Installa qualsiasi software, configura ogni dettaglio del server.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">&#x1F4CA;</div>
+          <h3>Scalabilità</h3>
+          <p>Aumenta RAM, CPU e storage in pochi click senza migrare i dati o cambiare provider.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats">
+    <div class="container stats-grid">
+      <div class="stat">
+        <span class="stat-num">99.9%</span>
+        <span class="stat-label">Uptime garantito</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">&lt; 50ms</span>
+        <span class="stat-label">Latenza media</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">24/7</span>
+        <span class="stat-label">Monitoraggio attivo</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">SSL</span>
+        <span class="stat-label">Certificato attivo</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact" id="contact">
+    <div class="container contact-inner">
+      <h2 class="section-title">Parliamoci</h2>
+      <p class="section-sub">Hai un progetto in mente? Scrivimi, rispondo entro 24 ore.</p>
+      <form class="contact-form">
+        <div class="form-row">
+          <input type="text" placeholder="Il tuo nome" required />
+          <input type="email" placeholder="La tua email" required />
+        </div>
+        <textarea rows="5" placeholder="Il tuo messaggio..." required></textarea>
+        <button type="submit" class="btn btn-primary">Invia messaggio</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Fatto con <span class="heart">&#x2665;</span> e hostato su VPS &mdash; &copy; 2026</p>
+  </footer>
+
+</body>
+</html>
