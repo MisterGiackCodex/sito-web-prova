@@ -1,29 +1,5 @@
 /* =============================================
-   CUSTOM CURSOR
-   ============================================= */
-const cursor     = document.createElement('div'); cursor.className = 'cursor';
-const cursorRing = document.createElement('div'); cursorRing.className = 'cursor-ring';
-document.body.prepend(cursor, cursorRing);
-
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-(function animCursor() {
-  rx += (mx - rx) * 0.14;
-  ry += (my - ry) * 0.14;
-  cursor.style.left     = mx + 'px';
-  cursor.style.top      = my + 'px';
-  cursorRing.style.left = rx + 'px';
-  cursorRing.style.top  = ry + 'px';
-  requestAnimationFrame(animCursor);
-})();
-
-document.querySelectorAll('a, button, .svc, .bcard:not(.bcard--soon)').forEach(el => {
-  el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); cursorRing.classList.add('hover'); });
-  el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); cursorRing.classList.remove('hover'); });
-});
-
-/* =============================================
-   NAVBAR SCROLL
+   NAVBAR — scrolled state
    ============================================= */
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
@@ -31,142 +7,95 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 /* =============================================
-   MOBILE NAV
+   MOBILE NAV — hamburger drawer
    ============================================= */
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const drawer = document.getElementById('drawer');
+
+function openNav() {
+  drawer.classList.add('open');
+  drawer.setAttribute('aria-hidden', 'false');
+  hamburgerBtn.setAttribute('aria-expanded', 'true');
+  hamburgerBtn.setAttribute('aria-label', 'Chiudi menu');
+}
+
+function closeNav() {
+  drawer.classList.remove('open');
+  drawer.setAttribute('aria-hidden', 'true');
+  hamburgerBtn.setAttribute('aria-expanded', 'false');
+  hamburgerBtn.setAttribute('aria-label', 'Apri menu');
+}
+
 function toggleNav() {
-  document.getElementById('drawer').classList.toggle('open');
+  drawer.classList.contains('open') ? closeNav() : openNav();
 }
 
+hamburgerBtn.addEventListener('click', toggleNav);
+
+// Close drawer when a link is clicked
+drawer.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', closeNav);
+});
+
+// Close drawer on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && drawer.classList.contains('open')) {
+    closeNav();
+    hamburgerBtn.focus();
+  }
+});
+
 /* =============================================
-   MARQUEE — duplicate content for seamless loop
+   MARQUEE — duplicate for seamless loop
    ============================================= */
-const mi = document.getElementById('marqueeInner');
-if (mi) {
-  const clone = mi.cloneNode(true);
-  mi.parentElement.appendChild(clone);
+const marqueeInner = document.getElementById('marqueeInner');
+if (marqueeInner) {
+  const clone = marqueeInner.cloneNode(true);
+  clone.setAttribute('aria-hidden', 'true');
+  marqueeInner.parentElement.appendChild(clone);
 }
 
 /* =============================================
-   SCROLL REVEAL
+   SCROLL REVEAL — IntersectionObserver
    ============================================= */
 const revealObs = new IntersectionObserver((entries) => {
-  entries.forEach((e, i) => {
-    if (e.isIntersecting) {
-      const delay = parseFloat(e.target.dataset.delay || 0);
-      setTimeout(() => e.target.classList.add('in'), delay * 1000);
-      revealObs.unobserve(e.target);
-    }
+  entries.forEach((entry) => {
+    if (!entry.isIntersecting) return;
+    const idx = parseFloat(entry.target.dataset.revealIdx || 0);
+    const delay = idx * 60; // 60ms stagger
+    setTimeout(() => entry.target.classList.add('in'), delay);
+    revealObs.unobserve(entry.target);
   });
-}, { threshold: 0.12 });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-document.querySelectorAll('.reveal').forEach((el, i) => {
+document.querySelectorAll('.reveal').forEach((el, globalIdx) => {
+  // Stagger siblings within same parent container
   const parent = el.parentElement;
-  const siblings = [...parent.querySelectorAll('.reveal')];
-  el.dataset.delay = siblings.indexOf(el) * 0.1;
+  const siblings = [...parent.querySelectorAll(':scope > .reveal')];
+  const sibIdx = siblings.indexOf(el);
+  el.dataset.revealIdx = sibIdx >= 0 ? sibIdx : 0;
   revealObs.observe(el);
 });
 
 /* =============================================
-   COUNTER ANIMATION
+   SCROLL SPY — active nav link
    ============================================= */
-function animateCounter(el) {
-  const target = parseInt(el.dataset.target, 10);
-  const duration = 1400;
-  const start = performance.now();
-  function update(now) {
-    const p = Math.min((now - start) / duration, 1);
-    const ease = 1 - Math.pow(1 - p, 3);
-    el.textContent = Math.floor(ease * target);
-    if (p < 1) requestAnimationFrame(update);
-    else el.textContent = target;
-  }
-  requestAnimationFrame(update);
-}
+const sections = document.querySelectorAll('main section[id]');
+const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
 
-const counterObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      animateCounter(e.target);
-      counterObs.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.5 });
-
-document.querySelectorAll('[data-target]').forEach(el => counterObs.observe(el));
-
-/* =============================================
-   BENTO CARD MOUSE GLOW
-   ============================================= */
-document.querySelectorAll('.bcard').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const x = ((e.clientX - r.left) / r.width) * 100;
-    const y = ((e.clientY - r.top) / r.height) * 100;
-    const glow = card.querySelector('.bcard-glow');
-    if (glow) glow.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(124,58,237,0.18), transparent 60%)`;
-  });
-});
-
-/* =============================================
-   SERVICE ROW HOVER ACCENT
-   ============================================= */
-document.querySelectorAll('.svc').forEach(svc => {
-  const num = svc.getAttribute('data-n');
-});
-
-/* =============================================
-   CONTACT FORM — Formspree
-   ============================================= */
-document.getElementById('contactForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const btn  = document.getElementById('cfSubmit');
-  const msg  = document.getElementById('cfMsg');
-  const text = document.getElementById('cfText');
-
-  text.textContent = 'Invio in corso...';
-  btn.disabled = true;
-  msg.className = 'cf-msg';
-  msg.textContent = '';
-
-  const payload = {
-    name:    this.name.value,
-    email:   this.email.value,
-    service: this.service.value,
-    message: this.message.value,
-  };
-
-  try {
-    const res = await fetch('https://formspree.io/f/FORM_ID', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(payload),
+const spyObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    navLinks.forEach(a => {
+      a.classList.remove('active');
+      a.removeAttribute('aria-current');
     });
-    if (res.ok) {
-      msg.className = 'cf-msg ok';
-      msg.textContent = '✓ Messaggio inviato! Ti rispondo entro 24 ore.';
-      this.reset();
-    } else { throw new Error(); }
-  } catch {
-    msg.className = 'cf-msg err';
-    msg.textContent = '✕ Errore nell\'invio. Riprova tra qualche minuto.';
-  } finally {
-    text.textContent = 'Invia messaggio';
-    btn.disabled = false;
-  }
-});
-
-/* =============================================
-   SMOOTH ACTIVE NAV ON SCROLL
-   ============================================= */
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-menu a');
-const scrollSpy = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      navLinks.forEach(a => a.classList.remove('active'));
-      const active = document.querySelector(`.nav-menu a[href="#${e.target.id}"]`);
-      if (active) active.classList.add('active');
+    const active = document.querySelector(`.nav-menu a[href="#${entry.target.id}"]`);
+    if (active) {
+      active.classList.add('active');
+      active.setAttribute('aria-current', 'true');
     }
   });
 }, { threshold: 0.4 });
-sections.forEach(s => scrollSpy.observe(s));
+
+sections.forEach(s => spyObs.observe(s));
