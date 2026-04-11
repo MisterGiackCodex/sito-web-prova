@@ -1,0 +1,8 @@
+.git
+.github
+.claude
+Dockerfile
+.dockerignore
+README.md
+*.ps1
+*.md
